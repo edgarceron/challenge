@@ -1,0 +1,12 @@
+{
+    "name": "challenge",
+    "description": "Memcached server",
+    "version": "0.0.1",
+    "author": {
+        "name": "Edgar Mauricio Ceron Florez",
+        "email": "edgar.ceron@correounivalle.edu.co"
+    },
+    "dependencies": {
+        "memcached": "^2.2.2"
+    }
+}
