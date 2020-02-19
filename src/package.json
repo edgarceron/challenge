@@ -6,5 +6,8 @@
         "name": "Edgar Mauricio Ceron Florez",
         "email": "edgar.ceron@correounivalle.edu.co"
     },
-    "dependencies": {}
+    "dependencies": {},
+    "devDependencies": {
+        "jest": "^25.1.0"
+    }
 }
