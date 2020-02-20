@@ -1,5 +1,6 @@
 const handleData = require('./handleData');
-
+const readConfig = require('./readConfig');
+const options    = readConfig.readOptions();
 /** Starts the memcached server 
  * @param {int} port - Port number, a number between 1 and 65535
  * @param {string} protocol [type=TCP] - Connection type, it may be TCP or UDP 
@@ -11,11 +12,10 @@ function startServer(port, protocol="TCP"){
         var server = net.createServer(function(socket) {
 
             /** @member {int} state Represents the transaction state of a connection*/
-            var state = 0;
+            var result = {"state":options.requireAuth};
 
             socket.on('data', function(data) {
-                var result = handleData(data, state);
-                state = result.state;
+                result = handleData(data, result);
                 if(result.message != ""){
                     socket.write(message);
                 }
