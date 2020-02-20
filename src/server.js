@@ -1,11 +1,13 @@
 const handleData = require('./handleData');
 const readConfig = require('./readConfig');
+const cache      = require('./cache/cache');
 const options    = readConfig.readOptions();
 /** Starts the memcached server 
- * @param {int} port - Port number, a number between 1 and 65535
+ * @param {number} port - Port number, a number between 1 and 65535
  * @param {string} protocol [type=TCP] - Connection type, it may be TCP or UDP 
 */
 function startServer(port, protocol="TCP"){
+    cacheObj = cache.SingletonCache.getInstance();
     if(protocol == "TCP"){
         var net = require('net');
 

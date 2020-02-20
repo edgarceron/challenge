@@ -1,5 +1,5 @@
 const authentication = require('./authentication');
-
+const storageCommands     = require('./commands/storage');
 /**
  * Handles the data from a connection
  * If the state is 0 the data recieved must be a message, otherwise the data 
@@ -74,7 +74,37 @@ function handleData(data, pastResult=null){
         }
     }
     else if(pastResult.state == 1){
-
+        switch(pastResult.command){
+            case "set":
+                result = storageCommands.set(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.noReply);
+                break;
+            case "add":
+                stringArgs = dividedData.slice(1);
+                args = getSettedArgsStorage(stringArgs);
+                result = validateArgs(args, "add");
+                break;
+            case "replace":
+                stringArgs = dividedData.slice(1);
+                args = getSettedArgsStorage(stringArgs);
+                result = validateArgs(args, "replace");
+                break;
+            case "append":
+                stringArgs = dividedData.slice(1);
+                args = getSettedArgsStorage(stringArgs);
+                result = validateArgs(args, "append");
+                break;
+            case "prepend":
+                stringArgs = dividedData.slice(1);
+                args = getSettedArgsStorage(stringArgs);
+                result = validateArgs(args, "prepend");
+                break;
+            case "cas":
+                stringArgs = dividedData.slice(1);
+                args = getSettedArgsStorage(stringArgs, true);
+                result = validateArgs(args, "prepend");
+                break;
+        }
     }
     else if(pastResult.state == 2){
         var recievedData = data.toString();
@@ -177,7 +207,7 @@ function getSettedArgsStorage(stringArgs, cas=false){
  * Gets a string and transforms it into an object representing memcached arguments
  * for a retrieval operation 
  * @param {sting} stringArgs 
- * @return {args} The arguments transformed into an object
+ * @return {Object} The arguments transformed into an object
  */
  function getSettedArgsRetrieval(stringArgs){
     var args = {};
@@ -230,7 +260,7 @@ function validateArgs(args, command){
 
     if(!(args.noReply === undefined)){
         if(args.noReply == "noreply"){
-            args.noReply = true;
+            result.noReply = true;
         }
         else{
             result.state = 0;
