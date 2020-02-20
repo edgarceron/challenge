@@ -16,10 +16,15 @@ class Entry{
     constructor(key, flags, exptime, bytes, cas, data){
         this.key       = key;
         this.flags     = flags;
-        this.exptime   = exptime;
+        this.exptime   = 0;
+        this.setExptime(exptime);
         this.bytes     = bytes;
         this.cas       = cas;
         this.data      = data;
+    }
+
+    getKey(){
+        return this.key;
     }
 
     getFlags(){
@@ -46,7 +51,7 @@ class Entry{
         this.flags = flags;
     }
 
-    setExtime(exptime){
+    setExptime(exptime){
         if(exptime <= (60*60*24*30)){
             this.exptime = Math.floor(new Date() / 1000) + exptime;
         }

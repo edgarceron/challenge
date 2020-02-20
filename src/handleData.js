@@ -46,28 +46,18 @@ function handleData(data, pastResult=null){
             case "cas":
                 stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs, true);
-                result = validateArgs(args, "prepend");
+                result = validateArgs(args, "cas");
                 break;
             case "get":
                 stringArgs = dividedData.slice(1);
-                args = getSettedArgsRetrieval(stringArgs, true);
+                args = getSettedArgsRetrieval(stringArgs);
                 result = validateArgs(args, "get");
                 break;
             case "gets":
                 stringArgs = dividedData.slice(1);
-                args = getSettedArgsRetrieval(stringArgs, true);
+                args = getSettedArgsRetrieval(stringArgs);
                 result = validateArgs(args, "gets");
                 break; 
-            case "gat":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsRetrieval(stringArgs, true);
-                result = validateArgs(args, "gat");
-                break;
-            case "gats":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsRetrieval(stringArgs, true);
-                result = validateArgs(args, "gats");
-                break;  
             default:
                 result.state   = 0;
                 result.message = "ERROR\r\n";
@@ -80,19 +70,16 @@ function handleData(data, pastResult=null){
                     pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "add":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsStorage(stringArgs);
-                result = validateArgs(args, "add");
+                result = storageCommands.add(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "replace":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsStorage(stringArgs);
-                result = validateArgs(args, "replace");
+                result = storageCommands.replace(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "append":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsStorage(stringArgs);
-                result = validateArgs(args, "append");
+                result = storageCommands.append(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "prepend":
                 stringArgs = dividedData.slice(1);
@@ -171,11 +158,16 @@ function getSettedArgsStorage(stringArgs, cas=false){
                 args.bytes     = element;
                 break;
             case 4:
-                args.noReply   = element;
+                if(cas){
+                    args.cas       = element;
+                }
+                else{
+                    args.noReply   = element;
+                }
                 break;
             case 5:
                 if(cas){
-                    args.cas   = element;
+                    args.noReply       = element;
                 }
                 else{
                     args.tooMany   = element;
@@ -211,21 +203,11 @@ function getSettedArgsStorage(stringArgs, cas=false){
  */
  function getSettedArgsRetrieval(stringArgs){
     var args = {};
-    var c    = 0;
     args.missing = false;
-
-    stringArgs.forEach(element => {
-        switch(c){
-            case 0:
-                args.key       = element;
-                break;
-            case 1:
-                args.tooMany   = element;
-                break;
-            default:
-                args.tooMany = args.tooMany + " " + element;
-                break;
-        }
+    args.keys    = [];
+    var c = 0;
+    stringArgs.forEach(key => {
+        args.keys.push(key);
         c++;
     });
 
@@ -329,11 +311,19 @@ function validateArgs(args, command){
     }
     return result;
 }
+/**
+ * For test purpouses, returns the cache
+ * @returns {Object}
+ */
+function getStorageCache(){
+    return storageCommands.currentCache();
+} 
 
 module.exports = {
-    handleData: handleData,
-    getSettedArgsStorage: getSettedArgsStorage,
-    getSettedArgsRetrieval: getSettedArgsRetrieval,
-    validateArgs: validateArgs 
+    handleData,
+    getSettedArgsStorage,
+    getSettedArgsRetrieval,
+    validateArgs,
+    getStorageCache
 }
 

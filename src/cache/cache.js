@@ -76,6 +76,15 @@ class Cache{
     }
 
     /**
+     * Clear a cas from the cas memory
+     * @param {number} cas 
+     */
+    clearCas(cas){
+        delete this.casMemory[cas];
+        return true;
+    }
+
+    /**
      * For test only use
      * @returns The cas memory of the cache
      */

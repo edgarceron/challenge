@@ -11,6 +11,6 @@ function readOptions(){
     return options;
 }
 
-module.exports(
+module.exports = {
     readOptions
-)
+}

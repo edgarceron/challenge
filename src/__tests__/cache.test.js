@@ -8,9 +8,9 @@ test('Same cache instance in two objetcs', () => {
 });
 
 test('Memory usage count test', () => {
-    entry = new entry.Entry("yeah", 23, 3600, 34, 36, Buffer.from("test"));
+    var entryTest = new entry.Entry("yeah", 23, 3600, 34, 36, Buffer.from("test"));
     var cacheObj = cache.SingletonCache.getInstance();
-    cacheObj.alterEntry(entry.key, entry);
+    cacheObj.alterEntry(entryTest.key, entryTest);
     expect(cacheObj.countMemory()).toBe(34);
 });
 
@@ -22,4 +22,9 @@ test('Thousand different cas', () => {
     casMemory = cacheObj.getCasMemory();
     memorySize = Object.entries(casMemory).length;
     expect(memorySize).toBe(1000);
-})
+});
+
+test('Clear non-existent cas', () => {
+    var cacheObj = cache.SingletonCache.getInstance();
+    expect(cacheObj.clearCas(0)).toBe(true);
+});

@@ -2,6 +2,15 @@ const cache = require('../cache/cache');
 const entry = require('../cache/entry');
 
 var cacheObj = cache.SingletonCache.getInstance();
+
+/** 
+ * For test purpouses, returns the cache
+ * @returns {Object}
+*/
+function currentCache(){
+    return cacheObj;
+}
+
 /**
  * Sets a value in the cache.
  * @param {Object<Buffer>} data Data to store in the cache
@@ -22,6 +31,7 @@ function set(data, key, flags, exptime, bytes, noreply){
         cacheObj.alterMemoryUsage(bytes);
     }
     else{
+        cacheObj.clearCas(oldEntry.getCas());
         cacheObj.alterMemoryUsage(-oldEntry.bytes);
         cacheObj.alterMemoryUsage(bytes);
     }
@@ -125,6 +135,38 @@ function preppend(data, key, flags, exptime, bytes, noreply){
 }
 
 /**
+ * Stores data, but only if the server already hold data for the
+ * provided key and the given cas number matches with the currents
+ * cas of the entry. The recieved data will replace the previus.
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {number} cas A number that uniquely identifies stored data 
+ * @param {boolean} noreply Represents whether the client needs a response or not
+ */
+function cas(data, key, flags, exptime, bytes, cas, noreply){
+    var oldEntry       = cacheObj.getEntry(key);
+    result         = {};
+    result.state   = 0;
+    if((!oldEntry === undefined)){
+        if(oldEntry.getCas() == cas){
+            set(data, key, flags, exptime, bytes, noreply);
+        }
+        else{
+            result.message = "EXISTS\r\n";
+            return result;
+        }
+    }
+    else{
+        result.message = "NOT_FOUND\r\n";
+        return result;
+    }
+}
+
+/**
  * Returns a standard response for a failed storage operation
  * @returns {Object} The result object.
  */
@@ -140,5 +182,6 @@ module.exports = {
     add,
     replace,
     append,
-    preppend
+    preppend,
+    currentCache
 }

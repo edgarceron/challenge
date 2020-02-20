@@ -36,12 +36,6 @@ test('Too many arguments on a cas command', () => {
     );
 });
 
-test('Too many arguments on a retrieval command', () =>{
-    expect(file.getSettedArgsRetrieval(["mykey", "some other stuff"]).tooMany).toBe(
-        "some other stuff"
-    );
-});
-
 test('Missing arguments on a storage command', () => {
     expect(file.getSettedArgsStorage(["key"]).missing).toBe(true);
 });
@@ -104,9 +98,22 @@ test('Testing add sematics', () => {
     );
 });
 
+test('Testing cas sematics', () => {
+    expect(file.handleData(Buffer.from("cas mykey 10 3600 20 32567"), {"state":0})).toEqual(
+        {"command":"cas", "key":"mykey", "missing":false, "state":1, 
+        "message":"", "flags":10, "exptime":3600, "bytes":20, "cas":32567}
+    );
+});
+
 test('Testing get sematics', () => {
     expect(file.handleData(Buffer.from("get mykey"), {"state":0})).toEqual(
-        {"command":"get", "key":"mykey", "missing":false, "state":0, "message":""}
+        {"command":"get", "keys":["mykey"], "missing":false, "state":0, "message":""}
+    );
+});
+
+test('Testing gets sematics many keys', () => {
+    expect(file.handleData(Buffer.from("gets mykey1 mykey2 mykey3 mykey4"), {"state":0})).toEqual(
+        {"command":"gets", "keys":["mykey1", "mykey2", "mykey3", "mykey4"], "missing":false, "state":0, "message":""}
     );
 });
 

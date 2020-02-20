@@ -10,9 +10,9 @@ function startServer(port, protocol="TCP"){
     cacheObj = cache.SingletonCache.getInstance();
     if(protocol == "TCP"){
         var net = require('net');
-
+        var connections = [];
         var server = net.createServer(function(socket) {
-
+            connections.push(socket);
             /** @member {int} state Represents the transaction state of a connection*/
             var result = {"state":options.requireAuth};
 
@@ -20,6 +20,12 @@ function startServer(port, protocol="TCP"){
                 result = handleData(data, result);
                 if(result.message != ""){
                     socket.write(message);
+                }
+
+                if(result.multpleMessages.length > 0){
+                    result.multpleMessages.forEach(message => {
+                        socket.write(message);
+                    });
                 }
             });
 
@@ -31,6 +37,12 @@ function startServer(port, protocol="TCP"){
         });
     
         server.listen(port, '127.0.0.1');
+
+        return {
+            "originalCache" : cacheObj, 
+            "handleStorageCache": handleData.getStorageCache(), 
+            "connections":connections, 
+            "server":server};
     }
 
     else if(protocol == "UDP"){
@@ -83,12 +95,6 @@ function startServer(port, protocol="TCP"){
 }
 
 
-
-var port          = process.argv[2];
-if(!(typeof process.argv[2] === 'undefined')){
-    var protocol = process.argv[3];
+module.exports = {
+    startServer
 }
-else{
-    var protocol = "TCP";
-}
-startServer(port, protocol);
