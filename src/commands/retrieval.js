@@ -14,7 +14,7 @@ function get(key){
         var result = {};
         result.state = 0;
         result.multipleMessages = [valueMessage(entry)];
-        result.multipleMessages.push(entry.getData());
+        result.multipleMessages.push(Buffer.concat([entry.getData(), Buffer.from("\r\n")]));
     }
     return result;
 }
@@ -33,7 +33,7 @@ function gets(key){
         var result = {};
         result.state = 0;
         result.multipleMessages = [valueMessage(entry, true)];
-        result.multipleMessages.push(entry.getData());
+        result.multipleMessages.push(Buffer.concat([entry.getData(), Buffer.from("\r\n")]));
     }
     return result;
 }

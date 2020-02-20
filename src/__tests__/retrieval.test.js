@@ -13,7 +13,7 @@ test("Get with data found", () => {
     expect(retrievalCommands.get("yeah").multipleMessages).toEqual(
         [
             "VALUE yeah 23 34\r\n",
-            Buffer.from("test")
+            Buffer.from("test\r\n")
         ]
     );
 });
@@ -25,7 +25,7 @@ test("Gets with data found", () => {
     expect(retrievalCommands.gets("yeah").multipleMessages).toEqual(
         [
             "VALUE yeah 23 34 36\r\n",
-            Buffer.from("test")
+            Buffer.from("test\r\n")
         ]
     );
 });

@@ -151,9 +151,9 @@ function cas(data, key, flags, exptime, bytes, cas, noreply){
     var oldEntry       = cacheObj.getEntry(key);
     result         = {};
     result.state   = 0;
-    if((!oldEntry === undefined)){
+    if(!(oldEntry === undefined)){
         if(oldEntry.getCas() == cas){
-            set(data, key, flags, exptime, bytes, noreply);
+            return set(data, key, flags, exptime, bytes, noreply);
         }
         else{
             result.message = "EXISTS\r\n";
@@ -183,5 +183,6 @@ module.exports = {
     replace,
     append,
     preppend,
+    cas,
     currentCache
 }
