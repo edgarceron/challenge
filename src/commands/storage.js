@@ -4,12 +4,13 @@ const entry = require('../cache/entry');
 var cacheObj = cache.SingletonCache.getInstance();
 /**
  * Sets a value in the cache.
- * @param {Object<Buffer>} data 
- * @param {string} key 
- * @param {number} flags 
- * @param {number} exptime 
- * @param {number} bytes 
- * @param {boolean} noreply 
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {boolean} noreply Represents whether the client needs a response or not
  */
 function set(data, key, flags, exptime, bytes, noreply){
     
@@ -33,6 +34,17 @@ function set(data, key, flags, exptime, bytes, noreply){
     return result;
 }
 
+/**
+ * Stores data, but only if the server doesn't already hold data for the
+ * provided key.
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {boolean} noreply Represents whether the client needs a response or not
+ */
 function add(data, key, flags, exptime, bytes, noreply){
     var oldEntry = cacheObj.getEntry(key);
     if(oldEntry === undefined){
@@ -43,6 +55,17 @@ function add(data, key, flags, exptime, bytes, noreply){
     }
 }
 
+/**
+ * Stores data, but only if the server already hold data for the provided key.
+ * Replaces the previus data in the key.
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {boolean} noreply Represents whether the client needs a response or not
+ */
 function replace(data, key, flags, exptime, bytes, noreply){
     var oldEntry = cacheObj.getEntry(key);
     if(oldEntry === undefined){
@@ -53,6 +76,17 @@ function replace(data, key, flags, exptime, bytes, noreply){
     }
 }
 
+/**
+ * Stores data, but only if the server already hold data for the
+ * provided key, puts the data at the end of the existent data.
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {boolean} noreply Represents whether the client needs a response or not
+ */
 function append(data, key, flags, exptime, bytes, noreply){
     var oldEntry       = cacheObj.getEntry(key);
     if(oldEntry === undefined){
@@ -66,6 +100,17 @@ function append(data, key, flags, exptime, bytes, noreply){
     }
 }
 
+/**
+ * Stores data, but only if the server already hold data for the
+ * provided key, puts the data at the start of the existent data.
+ * @param {Object<Buffer>} data Data to store in the cache
+ * @param {string} key Key value to represent stored data, up to 250 characters
+ * @param {number} flags A number between 0 and 65535
+ * @param {number} exptime Expiration time;  a unix time stamp or a number in 
+ * seconds less than 60*60*24*30(Number of seconds in 30 days)
+ * @param {number} bytes Byte size of the data
+ * @param {boolean} noreply Represents whether the client needs a response or not
+ */
 function preppend(data, key, flags, exptime, bytes, noreply){
     var oldEntry       = cacheObj.getEntry(key);
     if(oldEntry === undefined){    
@@ -79,6 +124,10 @@ function preppend(data, key, flags, exptime, bytes, noreply){
     }
 }
 
+/**
+ * Returns a standard response for a failed storage operation
+ * @returns {Object} The result object.
+ */
 function notStoredResult(){
     result         = {};
     result.state   = 0;
