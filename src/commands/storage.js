@@ -22,24 +22,27 @@ function currentCache(){
  * @param {boolean} noreply Represents whether the client needs a response or not
  */
 function set(data, key, flags, exptime, bytes, noreply){
-    
-    var e = new entry.Entry(key, flags, exptime, bytes, cacheObj.newCas(), data);
-    var oldEntry = cacheObj.getEntry(key);
-    cacheObj.alterEntry(key, e);
-    
-    if(oldEntry === undefined){
-        cacheObj.alterMemoryUsage(bytes);
-    }
-    else{
-        cacheObj.clearCas(oldEntry.getCas());
-        cacheObj.alterMemoryUsage(-oldEntry.bytes);
-        cacheObj.alterMemoryUsage(bytes);
-    }
-
     result = {};
     result.state = 0;
-    if(!noreply){
-        result.message = "STORED\r\n";
+    if(!cacheObj.maxMemoryReached()){
+        var e = new entry.Entry(key, flags, exptime, bytes, cacheObj.newCas(), data);
+        var oldEntry = cacheObj.getEntry(key);
+        cacheObj.alterEntry(key, e);
+        if(oldEntry === undefined){
+            cacheObj.alterMemoryUsage(bytes);
+        }
+        else{
+            cacheObj.clearCas(oldEntry.getCas());
+            cacheObj.alterMemoryUsage(-oldEntry.bytes);
+            cacheObj.alterMemoryUsage(bytes);
+        }
+        
+        if(!noreply){
+            result.message = "STORED\r\n";
+        }
+    }
+    else{
+        result.message = "SERVER_ERROR The server doest not have any memory left for this operation";
     }
     return result;
 }

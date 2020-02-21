@@ -1,10 +1,10 @@
+
+
+console.log('"asdda"'.charAt('"asdda"'.length-1));
+/*
 const server = require('./server');
 var port          = process.argv[2];
-if(!(typeof process.argv[2] === 'undefined')){
-    var protocol = process.argv[3];
-}
-else{
-    var protocol = "TCP";
-}
+var memory        = process.argv[3];
 
-server.startServer(port, protocol);
+
+server.startServer(port, memory);*/

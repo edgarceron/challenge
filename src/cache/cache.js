@@ -9,6 +9,7 @@ class Cache{
         this.entries = entries;
         this.memoryUsage = this.countMemory();
         this.casMemory = {}
+        this.maxMemory = 0;
     }
 
     /**
@@ -90,6 +91,21 @@ class Cache{
      */
     getCasMemory(){
         return this.casMemory;
+    }
+    
+    /**
+     * Set the max memory for this cache, 0 for unlimited memory
+     * @param {number} memory Amount of memory in megabytes
+     */
+    setMaxMemory(memory){
+        this.maxMemory = memory * 1024;
+    }
+
+    maxMemoryReached(){
+        if(this.maxMemory != 0 && this.memoryUsage > this.maxMemory){
+            return true;
+        }
+        return false;
     }
 }
 

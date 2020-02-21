@@ -30,7 +30,6 @@ function gets(key){
     var result = {};
     result.message = "";
     if(!(entry === undefined)){
-        var result = {};
         result.state = 0;
         result.multipleMessages = [valueMessage(entry, true)];
         result.multipleMessages.push(Buffer.concat([entry.getData(), Buffer.from("\r\n")]));

@@ -1,5 +1,6 @@
 const authentication = require('./authentication');
 const storageCommands     = require('./commands/storage');
+const retrievalCommands     = require('./commands/retrieval');
 /**
  * Handles the data from a connection
  * If the state is 0 the data recieved must be a message, otherwise the data 
@@ -16,51 +17,64 @@ function handleData(data, pastResult=null){
         var recievedData = data.toString();
         var dividedData  = recievedData.split(' ');
         var command      = dividedData[0];
-
+        var stringArgs = dividedData.slice(1);
         switch(command){
             case "set":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs);
                 result = validateArgs(args, "set");
                 break;
             case "add":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs);
                 result = validateArgs(args, "add");
                 break;
             case "replace":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs);
                 result = validateArgs(args, "replace");
                 break;
             case "append":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs);
                 result = validateArgs(args, "append");
                 break;
             case "prepend":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs);
                 result = validateArgs(args, "prepend");
                 break;
             case "cas":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsStorage(stringArgs, true);
                 result = validateArgs(args, "cas");
                 break;
             case "get":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsRetrieval(stringArgs);
                 result = validateArgs(args, "get");
+                result.multipleMessages = [];
+                var tempResult = null;
+                if(result.message == ""){
+                    result.keys.forEach(key => {
+                        tempResult = retrievalCommands.get(key);
+                        if(tempResult.multipleMessages) 
+                            result.multipleMessages = result.multipleMessages.concat(tempResult.multipleMessages);
+                    });
+                }
+                result.multipleMessages = result.multipleMessages.concat("END\r\n");
                 break;
             case "gets":
-                stringArgs = dividedData.slice(1);
                 args = getSettedArgsRetrieval(stringArgs);
                 result = validateArgs(args, "gets");
+                result.multipleMessages = [];
+                var tempResult = null;
+                if(result.message == ""){
+                    result.keys.forEach(key => {
+                        tempResult = retrievalCommands.gets(key);
+                        if(tempResult.multipleMessages) 
+                            result.multipleMessages = result.multipleMessages.concat(tempResult.multipleMessages);
+                    });
+                }
+                result.multipleMessages = result.multipleMessages.concat("END\r\n");
                 break; 
             default:
                 result.state   = 0;
                 result.message = "ERROR\r\n";
+                break;
         }
     }
     else if(pastResult.state == 1){
@@ -82,14 +96,12 @@ function handleData(data, pastResult=null){
                     pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "prepend":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsStorage(stringArgs);
-                result = validateArgs(args, "prepend");
+                result = storageCommands.preppend(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.noReply);
                 break;
             case "cas":
-                stringArgs = dividedData.slice(1);
-                args = getSettedArgsStorage(stringArgs, true);
-                result = validateArgs(args, "prepend");
+                result = storageCommands.cas(data, pastResult.key, pastResult.flags, 
+                    pastResult.exptime, pastResult.bytes, pastResult.cas, pastResult.noReply);
                 break;
         }
     }
@@ -210,7 +222,6 @@ function getSettedArgsStorage(stringArgs, cas=false){
         args.keys.push(key);
         c++;
     });
-
     if(c==0){
         args.missing = true;
     }
@@ -246,7 +257,7 @@ function validateArgs(args, command){
         }
         else{
             result.state = 0;
-            result.message = "CLIENT_ERROR No reply argument has a error. Recieved: " 
+            result.message = "CLIENT_ERROR No reply argument has an error. Recieved: " 
                 + args.noReply + ", explected: noreply\r\n";
             return result;
         }
@@ -324,6 +335,8 @@ module.exports = {
     getSettedArgsStorage,
     getSettedArgsRetrieval,
     validateArgs,
-    getStorageCache
+    getStorageCache,
+    checkClearSeparedStringArgs,
+    checkSpacedStringKey
 }
 

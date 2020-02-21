@@ -1,7 +1,6 @@
 var storageCommands = require('../commands/storage');
 var retrievalCommands = require('../commands/retrieval');
 var cache = require('../cache/cache');
-var entry = require('../cache/entry');
 
 test("set command new entry", () => {
     var result = storageCommands.set(Buffer.from("test"), "test", 123, 3600, 4, false);
