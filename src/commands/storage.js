@@ -42,7 +42,9 @@ function set(data, key, flags, exptime, bytes, noreply){
         }
     }
     else{
-        result.message = "SERVER_ERROR The server doest not have any memory left for this operation";
+        if(!noreply){
+            result.message = "SERVER_ERROR The server doest not have any memory left for this operation";
+        }
     }
     return result;
 }
@@ -64,7 +66,7 @@ function add(data, key, flags, exptime, bytes, noreply){
         return set(data, key, flags, exptime, bytes, noreply);
     }
     else{
-        return notStoredResult();
+        return notStoredResult(noreply);
     }
 }
 
@@ -82,7 +84,7 @@ function add(data, key, flags, exptime, bytes, noreply){
 function replace(data, key, flags, exptime, bytes, noreply){
     var oldEntry = cacheObj.getEntry(key);
     if(oldEntry === undefined){
-        return notStoredResult();
+        return notStoredResult(noreply);
     }
     else{
         return set(data, key, flags, exptime, bytes, noreply);
@@ -103,7 +105,7 @@ function replace(data, key, flags, exptime, bytes, noreply){
 function append(data, key, flags, exptime, bytes, noreply){
     var oldEntry       = cacheObj.getEntry(key);
     if(oldEntry === undefined){
-        return notStoredResult();
+        return notStoredResult(noreply);
     }
     else{
         var oldData    = oldEntry.getData();
@@ -127,7 +129,7 @@ function append(data, key, flags, exptime, bytes, noreply){
 function preppend(data, key, flags, exptime, bytes, noreply){
     var oldEntry       = cacheObj.getEntry(key);
     if(oldEntry === undefined){    
-        return notStoredResult();
+        return notStoredResult(noreply);
     }
     else{
         var oldData    = oldEntry.getData();
@@ -173,10 +175,12 @@ function cas(data, key, flags, exptime, bytes, cas, noreply){
  * Returns a standard response for a failed storage operation
  * @returns {Object} The result object.
  */
-function notStoredResult(){
+function notStoredResult(noreply){
     result         = {};
     result.state   = 0;
-    result.message = "NOT_STORED\r\n";
+    if(!noreply){
+        result.message = "NOT_STORED\r\n";
+    }
     return result;
 }
 

@@ -1,19 +1,46 @@
+const net = require('net');
 
-var net = require('net');
+/**
+ * Creates a TCP client to the specified server on the
+ * given port.
+ * @param {string} server 
+ * @param {number} port 
+ */
+function startClient(server, port, noLogs = false){
+	var client = new net.Socket();
+	client.log = "";
+	client.connect(port, server, function() {
+		if(!noLogs) console.log('Connected');
+	});
 
-var port          = process.argv[2];
+	client.on('data', function(data) {
+		console.log(data.toString());
+		client.log += data.toString();
+		//client.destroy(); // kill client after server's response
+	});
 
-var client = new net.Socket();
-client.connect(port, '127.0.0.1', function() {
-	console.log('Connected');
-	client.write("Buffer.from([1, 2])");
-});
+	client.on('close', function() {
+		if(!noLogs) console.log('Connection closed');
+	});
 
-client.on('data', function(data) {
-	console.log('Received: ' + data);
-	//client.destroy(); // kill client after server's response
-});
+	client.on('error', function (err) {
+		if(!noLogs) console.log('An error happened in connection' + err.stack);
+	});
 
-client.on('close', function() {
-	console.log('Connection closed');
-});
+	client.on('end', function () {
+		if(!noLogs) console.log('The server finished the conection');
+	});
+
+	client.on('timeout', function () {
+		if(!noLogs) console.log('Socket did timeout');
+		client.end();
+	});
+
+	return client;
+}
+
+
+module.exports = {
+	startClient
+}
+

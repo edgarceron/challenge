@@ -14,7 +14,7 @@ function get(key){
         var result = {};
         result.state = 0;
         result.multipleMessages = [valueMessage(entry)];
-        result.multipleMessages.push(Buffer.concat([entry.getData(), Buffer.from("\r\n")]));
+        result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));
     }
     return result;
 }
@@ -32,7 +32,7 @@ function gets(key){
     if(!(entry === undefined)){
         result.state = 0;
         result.multipleMessages = [valueMessage(entry, true)];
-        result.multipleMessages.push(Buffer.concat([entry.getData(), Buffer.from("\r\n")]));
+        result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));
     }
     return result;
 }

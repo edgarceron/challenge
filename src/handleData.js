@@ -51,8 +51,9 @@ function handleData(data, pastResult=null){
                 if(result.message == ""){
                     result.keys.forEach(key => {
                         tempResult = retrievalCommands.get(key);
-                        if(tempResult.multipleMessages) 
+                        if(tempResult.multipleMessages){
                             result.multipleMessages = result.multipleMessages.concat(tempResult.multipleMessages);
+                        }
                     });
                 }
                 result.multipleMessages = result.multipleMessages.concat("END\r\n");
@@ -236,6 +237,7 @@ function getSettedArgsStorage(stringArgs, cas=false){
  * @returns {Object} An object containing the result of the data handle
  */
 function validateArgs(args, command){
+    result = {};
     if(args.missing){
         result.state = 0;
         result.message = "CLIENT_ERROR missing arguments\r\n";
@@ -335,8 +337,6 @@ module.exports = {
     getSettedArgsStorage,
     getSettedArgsRetrieval,
     validateArgs,
-    getStorageCache,
-    checkClearSeparedStringArgs,
-    checkSpacedStringKey
+    getStorageCache
 }
 
