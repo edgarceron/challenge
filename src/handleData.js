@@ -72,6 +72,47 @@ function handleData(data, pastResult=null){
                 }
                 result.multipleMessages = result.multipleMessages.concat("END\r\n");
                 break; 
+
+            case "flush_all":
+                var noreply = false;
+                result.state = 0;
+
+                if(stringArgs.length == 0){
+                    result.message = "CLIENT_ERROR missing arguments on flush_all\r\n";
+                }
+
+                if(stringArgs.length > 2){
+                    result.message = "CLIENT_ERROR Too many arguments on flush_all\r\n";
+                }
+                
+                if(stringArgs.length == 1){
+                    if(Number.isNaN(stringArgs[0])){
+                        result.message = "CLIENT_ERROR flush_all first argument must be a number\r\n";
+                    }
+
+                    else if(stringArgs[0] != "1" && stringArgs[0] != "0"){
+                        result.message = "CLIENT_ERROR flush_all first argument must be 0 or 1\r\n";
+                    }
+                    else{
+                        result.command = "flush_all";
+                        result.key     = stringArgs[0];
+                    }
+                }
+
+                if(stringArgs.length == 2){
+                    if(stringArgs[1] == "noreply"){
+                        noreply = true;
+                    }
+                    else{
+                        result.message = "CLIENT_ERROR No reply argument has an error. Recieved: " 
+                        + stringArgs[1] + ", explected: noreply\r\n";
+                    }
+                }
+
+                if(result.message == "" && !noreply){
+                    result.message = "OK\r\n";
+                }
+                break;
             default:
                 result.state   = 0;
                 result.message = "ERROR\r\n";

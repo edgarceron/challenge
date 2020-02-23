@@ -25,6 +25,23 @@ class Cache{
         });
         return acu;
     }
+
+    /**
+     * Expurge all the expried keys in the cache checking the
+     * exptime for each one againts the current tiem. 
+     */
+    expurgeExpiredKeys(){
+        var entryList = Object.entries(this.entries);
+        var acu = 0;
+        entryList.forEach(pair => {
+            key   = pair[0];
+            entry = pair[1];
+            if(entry.getExptime() < new Date()){
+                this.clearCas(entry.getCas());
+                delete this.entries.key;
+            }
+        });
+    }
     
     /**
      * @returns {number} Memory usage of the cache

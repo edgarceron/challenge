@@ -18,36 +18,36 @@ function startServer(port, memory, address, noLogs = false){
         /** @member {int} state Represents the transaction state of a connection*/
         var result = {"state":options.requireAuth};
         var calculating = false;
-        socket.on('data', function(data) {
-            var chk = data.toString();
-            var messages = chk.split("\r\n");
-            messages.forEach(message => {
-                console.log(message);
-                do{
-                    if(message != ""){
-                        console.log(calculating);
-                        if(!calculating){
-                            calculating = true;
-                            result = handleData.handleData(message, result);  
-                            calculating = false; 
+        socket.on('data', 
+            /**
+             * Recieves the data from a sockect connection to te server.
+             * The data is managed through a data handler which checks
+             * the data inputed from a client. If an answer is given by
+             * the handler it'll be write as a response to the client 
+             * socket
+             * @param {Object<Buffer>} data 
+             */
+            function(data) {
+                var chk = data.toString();
+                var messages = chk.split("\r\n");
+                messages.forEach(message => {
+                    console.log(message);
+                    do{
+                        if(message != ""){
+                            console.log(calculating);
+                            if(!calculating){
+                                calculating = true;
+                                result = handleData.handleData(message, result);  
+                                calculating = false; 
+                            }
                         }
-                    }
-                }while(calculating);
-            });
-            
-            console.log(result);
-
-            if(result.message !== undefined && result.message != ""){
-                socket.write(result.message);
+                    }while(calculating);
+                });
+                
+                console.log(result);
+                answer(socket, result);
             }
-            if(result.multipleMessages !== undefined){
-                if(result.multipleMessages.length > 0){
-                    result.multipleMessages.forEach(message => {
-                        socket.write(message);
-                    });
-                }
-            }
-        });
+        );
 
         socket.on('close', function(data) {
             if(!noLogs) console.log('Connection closed');
@@ -72,6 +72,24 @@ function startServer(port, memory, address, noLogs = false){
         "server":server};
 }
 
+/**
+ * Writes data into the sockect if there are messages in the
+ * result object
+ * @param {Object<Socket} socket 
+ * @param {Object} result 
+ */
+function answer(socket, result){
+    if(result.message !== undefined && result.message != ""){
+        socket.write(result.message);
+    }
+    if(result.multipleMessages !== undefined){
+        if(result.multipleMessages.length > 0){
+            result.multipleMessages.forEach(message => {
+                socket.write(message);
+            });
+        }
+    }
+}
 
 module.exports = {
     startServer

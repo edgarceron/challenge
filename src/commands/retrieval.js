@@ -11,10 +11,12 @@ function get(key){
     var result = {};
     result.message = "";
     if(!(entry === undefined)){
-        var result = {};
-        result.state = 0;
-        result.multipleMessages = [valueMessage(entry)];
-        result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));
+        if(checkExpired(entry)){
+            var result = {};
+            result.state = 0;
+            result.multipleMessages = [valueMessage(entry)];
+            result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));    
+        }
     }
     return result;
 }
@@ -30,9 +32,11 @@ function gets(key){
     var result = {};
     result.message = "";
     if(!(entry === undefined)){
-        result.state = 0;
-        result.multipleMessages = [valueMessage(entry, true)];
-        result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));
+        if(checkExpired(entry)){
+            result.state = 0;
+            result.multipleMessages = [valueMessage(entry, true)];
+            result.multipleMessages.push(Buffer.concat([Buffer.from(entry.getData()), Buffer.from("\r\n")]));
+        }
     }
     return result;
 }
@@ -53,6 +57,19 @@ function valueMessage(entry, cas=false){
         value += "\r\n";
     }
     return value;
+}
+
+/**
+ * Checks if a entry is expired
+ * @param {Object<Entry>} entry 
+ * @returns {boolean} Whether the entry is expired or not
+ */
+function checkExpired(entry){
+    console.log(entry);
+    if(entry.getExptime() < new Date()){
+        return true;
+    }
+    return false;
 }
 
 module.exports = {

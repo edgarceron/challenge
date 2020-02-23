@@ -236,3 +236,8 @@ test("Testing cas command wrong cas argument", () => {
     var result = file.handleData(Buffer.from("cas mykey 111 8000 1 cas noreply"), {"state": 0});
     expect(result.message).toBe("CLIENT_ERROR cas(fifth argument) must be a number\r\n");
 });
+
+test("Testing flush_data", () => {
+    var result = file.handleData(Buffer.from("flush_all 1"), {"state": 0});
+    expect(result.key).toBe("1");
+});

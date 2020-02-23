@@ -13,6 +13,9 @@ function currentCache(){
 
 /**
  * Sets a value in the cache.
+ * Checks if there was an entry with the given key.  If not just add the bytes 
+ * amount to memory In other case, clear the cas memory from the last entry.
+ * Also substracts the memory old ussage before adding the new one. 
  * @param {Object<Buffer>} data Data to store in the cache
  * @param {string} key Key value to represent stored data, up to 250 characters
  * @param {number} flags A number between 0 and 65535
@@ -26,9 +29,13 @@ function set(data, key, flags, exptime, bytes, noreply){
     result.state = 0;
     if(!cacheObj.maxMemoryReached()){
         var e = new entry.Entry(key, flags, exptime, bytes, cacheObj.newCas(), data);
+
+        
         var oldEntry = cacheObj.getEntry(key);
         cacheObj.alterEntry(key, e);
+        
         if(oldEntry === undefined){
+            
             cacheObj.alterMemoryUsage(bytes);
         }
         else{

@@ -23,34 +23,54 @@ class Entry{
         this.data      = data;
     }
 
+    /**
+     * @returns {string} The key for the entry
+     */
     getKey(){
         return this.key;
     }
 
+    /**
+     * @returns {number} The flags for the entry
+     */
     getFlags(){
         return this.flags;
     }
 
+    /**
+     * @returns {number} The exptime for the entry
+     */
     getExptime(){
         return this.exptime;
     }
 
+    /**
+     * @returns {number} The byte length for the entry
+     */
     getBytes(){
         return this.bytes;
     }
 
+    /**
+     * @returns {number} The unique cas for the entry
+     */
     getCas(){
         return this.cas;
     }
-
+    
+    /**
+     * @returns {Buffer} The data for the entry
+     */
     getData(){
         return this.data;
     }
 
-    setFlags(flags){
-        this.flags = flags;
-    }
-
+    /**
+     * Checks if the given exptime is a unix timestamp.If it's not, 
+     * creates a new timestamp adding the given exptime
+     * @param {number} exptime a number representing the exptime
+     * @returns {number} The new exptime
+     */
     setExptime(exptime){
         if(exptime <= (60*60*24*30)){
             this.exptime = Math.floor(new Date() / 1000) + exptime;
@@ -58,18 +78,6 @@ class Entry{
         else{
             this.exptime = exptime;
         }
-    }
-
-    setBytes(bytes){
-        this.bytes = bytes;
-    }
-
-    setCas(cas){
-        this.cas = cas;
-    }
-
-    setData(data){
-        this.data = data;
     }
 
 }
