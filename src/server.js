@@ -34,17 +34,19 @@ function startServer(port, memory, address, noLogs = false){
                     console.log(message);
                     do{
                         if(message != ""){
-                            console.log(calculating);
                             if(!calculating){
                                 calculating = true;
                                 result = handleData.handleData(message, result);  
                                 calculating = false; 
                             }
+                            console.log(result);
+                            if(result.command == "flush_all"){
+                                cacheObj.expurgeExpiredKeys(result.key);
+                            }
                         }
                     }while(calculating);
                 });
                 
-                console.log(result);
                 answer(socket, result);
             }
         );

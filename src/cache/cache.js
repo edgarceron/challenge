@@ -5,7 +5,7 @@ class Cache{
      * @param {Object} entries An object containing pairs key:entry 
      * representing data in the cache.
      */
-    constructor(entries = []){
+    constructor(entries = {}){
         this.entries = entries;
         this.memoryUsage = this.countMemory();
         this.casMemory = {}
@@ -29,16 +29,25 @@ class Cache{
     /**
      * Expurge all the expried keys in the cache checking the
      * exptime for each one againts the current tiem. 
+     * @param expurgeAll Whether if the expurge operation will
+     * clear all keys in the chace or only expired keys.
      */
-    expurgeExpiredKeys(){
+    expurgeExpiredKeys(expurgeAll){
         var entryList = Object.entries(this.entries);
         var acu = 0;
+        console.log('----------------------------');
+        console.log('Entry list:');
         entryList.forEach(pair => {
-            key   = pair[0];
-            entry = pair[1];
-            if(entry.getExptime() < new Date()){
+            var key   = pair[0];
+            var entry = pair[1];
+            
+            if(expurgeAll == 1){
+                this.entries = [];
+                this.casMemory = {};
+            }
+            else if(entry.getExptime() < Math.floor(new Date() / 1000)){
                 this.clearCas(entry.getCas());
-                delete this.entries.key;
+                delete this.entries[key];
             }
         });
     }

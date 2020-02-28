@@ -241,3 +241,4 @@ test("Testing flush_data", () => {
     var result = file.handleData(Buffer.from("flush_all 1"), {"state": 0});
     expect(result.key).toBe("1");
 });
+
