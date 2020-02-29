@@ -53,6 +53,29 @@ test('Verify get command from client', () => {
 
 });
 
+test('Verify a set command with more bytes than expected from client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11214', '100'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11214" "set mykey 21 3600 5\\r\\nmykeymoreinfo"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11214" "get mykey"').then(log => {
+            var results = log.trim().split("\r\n");
+            var value   = results[0].trim();
+            var key     = results[1].trim();    
+            expect([value, key]).toEqual(["VALUE mykey 21 5", "mykey"]);
+        });
+    });
+
+});
+
 test('Verify failing cas command from client', () => {
     var log = "";
     const spawn = require('child_process').spawn;
