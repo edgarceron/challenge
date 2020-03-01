@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: readConfig.js</title>
+    <title>JSDoc: Source: scripts/tcpclient.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: readConfig.js</h1>
+    <h1 class="page-title">Source: scripts/tcpclient.js</h1>
 
     
 
@@ -26,22 +26,52 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Read the configuration from the options files
- * requireAuth: 2 If authetication is required, otherwise 0
- * @returns {Object} An object contained the options and its respective
- * values.
+            <pre class="prettyprint source linenums"><code>const net = require('net');
+
+/**
+ * Creates a TCP client to the specified server on the
+ * given port.
+ * @param {string} server 
+ * @param {number} port 
  */
-function readOptions(){
-    const fs = require('fs');
-    var data = fs.readFileSync('./config/options.json');
-    var options = JSON.parse(data.toString());
-    return options;
+function startClient(server, port, noLogs = false){
+	var client = new net.Socket();
+	client.log = "";
+	client.connect(port, server, function() {
+		if(!noLogs) console.log('Connected');
+	});
+
+	client.on('data', function(data) {
+		console.log(data.toString());
+		client.log += data.toString();
+		//client.destroy(); // kill client after server's response
+	});
+
+	client.on('close', function() {
+		if(!noLogs) console.log('Connection closed');
+	});
+
+	client.on('error', function (err) {
+		if(!noLogs) console.log('An error happened in connection' + err.stack);
+	});
+
+	client.on('end', function () {
+		if(!noLogs) console.log('The server finished the conection');
+	});
+
+	client.on('timeout', function () {
+		if(!noLogs) console.log('Socket did timeout');
+		client.end();
+	});
+
+	return client;
 }
 
+
 module.exports = {
-    readOptions
+	startClient
 }
+
 </code></pre>
         </article>
     </section>

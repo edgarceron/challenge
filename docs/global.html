@@ -152,7 +152,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server.js.html">server.js</a>, <a href="server.js.html#line18">line 18</a>
+        <a href="server.js.html">server.js</a>, <a href="server.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -556,7 +556,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server.js.html">server.js</a>, <a href="server.js.html#line83">line 83</a>
+        <a href="server.js.html">server.js</a>, <a href="server.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -1119,6 +1119,143 @@
     
 
     
+    <h4 class="name" id="checkClearSeparedStringArgs"><span class="type-signature"></span>checkClearSeparedStringArgs<span class="signature">(args)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if there are arguments pased between quotation marks (")in the args array and return a new list with those argumentslisted as one
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_args.js.html">scripts/args.js</a>, <a href="scripts_args.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="checkExpired"><span class="type-signature"></span>checkExpired<span class="signature">(entry)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
@@ -1267,6 +1404,143 @@
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="checkSpacedStringArg"><span class="type-signature"></span>checkSpacedStringArg<span class="signature">(args)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if there are arguments pased between quotation marks (")and tranforms then into one argument
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="scripts_args.js.html">scripts/args.js</a>, <a href="scripts_args.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3287,7 +3561,7 @@
     
 
     
-    <h4 class="name" id="startServer"><span class="type-signature"></span>startServer<span class="signature">(port, memory, address)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="startClient"><span class="type-signature"></span>startClient<span class="signature">(server, port)</span><span class="type-signature"></span></h4>
     
 
     
@@ -3295,7 +3569,7 @@
 
 
 <div class="description">
-    Starts the memcached server
+    Creates a TCP client to the specified server on thegiven port.
 </div>
 
 
@@ -3331,6 +3605,29 @@
 
         <tr>
             
+                <td class="name"><code>server</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>port</code></td>
             
 
@@ -3347,53 +3644,7 @@
 
             
 
-            <td class="description last">Port number, a number between 1 and 65535</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>memory</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Ammount of memory use in megabytes</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Represents the address in which the serveris going to listen.</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -3434,7 +3685,233 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server.js.html">server.js</a>, <a href="server.js.html#line11">line 11</a>
+        <a href="scripts_tcpclient.js.html">scripts/tcpclient.js</a>, <a href="scripts_tcpclient.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="startServer"><span class="type-signature"></span>startServer<span class="signature">(port, memory, address, noLogs)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Starts the memcached server
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>port</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Port number, a number between 1 and 65535</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>memory</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Ammount of memory use in megabytes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Represents the address in which the serveris going to listen.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noLogs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Whether if show logs or not.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="server.js.html">server.js</a>, <a href="server.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -3834,13 +4311,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Cache.html">Cache</a></li><li><a href="Entry.html">Entry</a></li></ul><h3>Global</h3><ul><li><a href="global.html#add">add</a></li><li><a href="global.html#answer">answer</a></li><li><a href="global.html#append">append</a></li><li><a href="global.html#cas">cas</a></li><li><a href="global.html#checkExpired">checkExpired</a></li><li><a href="global.html#currentCache">currentCache</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#gets">gets</a></li><li><a href="global.html#getSettedArgsRetrieval">getSettedArgsRetrieval</a></li><li><a href="global.html#getSettedArgsStorage">getSettedArgsStorage</a></li><li><a href="global.html#getStorageCache">getStorageCache</a></li><li><a href="global.html#handleData">handleData</a></li><li><a href="global.html#notStoredResult">notStoredResult</a></li><li><a href="global.html#preppend">preppend</a></li><li><a href="global.html#readOptions">readOptions</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#result">result</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateArgs">validateArgs</a></li><li><a href="global.html#valueMessage">valueMessage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Cache.html">Cache</a></li><li><a href="Entry.html">Entry</a></li></ul><h3>Global</h3><ul><li><a href="global.html#add">add</a></li><li><a href="global.html#answer">answer</a></li><li><a href="global.html#append">append</a></li><li><a href="global.html#cas">cas</a></li><li><a href="global.html#checkClearSeparedStringArgs">checkClearSeparedStringArgs</a></li><li><a href="global.html#checkExpired">checkExpired</a></li><li><a href="global.html#checkSpacedStringArg">checkSpacedStringArg</a></li><li><a href="global.html#currentCache">currentCache</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#gets">gets</a></li><li><a href="global.html#getSettedArgsRetrieval">getSettedArgsRetrieval</a></li><li><a href="global.html#getSettedArgsStorage">getSettedArgsStorage</a></li><li><a href="global.html#getStorageCache">getStorageCache</a></li><li><a href="global.html#handleData">handleData</a></li><li><a href="global.html#notStoredResult">notStoredResult</a></li><li><a href="global.html#preppend">preppend</a></li><li><a href="global.html#readOptions">readOptions</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#result">result</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#startClient">startClient</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateArgs">validateArgs</a></li><li><a href="global.html#valueMessage">valueMessage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Feb 29 2020 13:07:30 GMT-0500 (hora estándar de Colombia)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Feb 29 2020 22:16:13 GMT-0500 (hora estándar de Colombia)
 </footer>
 
 <script> prettyPrint(); </script>
