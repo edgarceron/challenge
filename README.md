@@ -40,7 +40,7 @@ Any output will be displayed in the command terminal you're using.
 However this memcached server was also tested with a python implementation of memcached client, so in theory any other memcached client could make use of it. 
 
 ### Running tests
-From terminal you should reach the src folder. Then a typical npm run test should work as long as you have already installed the dependencies.
+From terminal you should reach the src folder. Then a typical npm run test should work as long as you have already installed the dependencies. A JMeter Load test calle "Load test.jmx" is in the root directory.
 
 ```
 cd src

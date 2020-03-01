@@ -116,7 +116,7 @@ function append(data, key, flags, exptime, bytes, noreply){
     }
     else{
         var oldData    = oldEntry.getData();
-        var concatData = Buffer.concat([oldData, data]);
+        var concatData = Buffer.concat([Buffer.from(oldData), Buffer.from(data)]);
         var sumBytes   = oldEntry.getBytes() + bytes;
         return set(concatData, key, oldEntry.getFlags(), oldEntry.getExptime(), sumBytes, noreply);
     }
@@ -140,7 +140,7 @@ function preppend(data, key, flags, exptime, bytes, noreply){
     }
     else{
         var oldData    = oldEntry.getData();
-        var concatData = Buffer.concat([data, oldData]);
+        var concatData = Buffer.concat([Buffer.from(data), Buffer.from(oldData)]);
         var sumBytes   = oldEntry.getBytes() + bytes;
         return set(concatData, key, oldEntry.getFlags(), oldEntry.getExptime(), sumBytes, noreply);
     }

@@ -65,7 +65,6 @@ function valueMessage(entry, cas=false){
  * @returns {boolean} Whether the entry is expired or not
  */
 function checkExpired(entry){
-    console.log(entry);
     if(entry.getExptime() < new Date()){
         return true;
     }

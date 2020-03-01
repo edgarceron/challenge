@@ -190,3 +190,202 @@ test('expurge all keys', () => {
         expect(result).toEqual("END");
     });
 });
+
+test('Verify a set command with no more memory left', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11214', '1'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11230" "set mykey 21 3600 1025\\r\\nmykey"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11230" "set mykey2 21 3600 5\\r\\nmykey"').then(log1 => { 
+            expect(log1.trim()).toBe("SERVER_ERROR The server doest not have any memory left for this operation");
+        });
+    });
+
+});
+
+test('Verify add command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    var server = spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11231', '100'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11231" "flush_all 1 noreply\\r\\nadd mykey 0 3600 5\\r\\nmykey"').then(log => {   
+        expect(log.trim()).toBe("STORED");
+    });
+});
+
+test('Verify failing add command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11222', '1'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11222" "set mykey 0 3600 1025\\r\\nmykey"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11222" "add mykey 0 3600 5\\r\\nmykey"').then(log1 => { 
+            expect(log1.trim()).toBe("NOT_STORED");
+        });
+    });
+});
+
+
+test('Verify replace command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11220', '1'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11220" "set mykey 0 3600 5\\r\\nmykey"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11220" "replace mykey 0 3600 6 noreply\\r\\nmykey2\\r\\nget mykey"').then(log1 => { 
+            var results = log1.trim().split("\r\n");
+            var value   = results[0].trim();
+            var key     = results[1].trim();    
+            expect([value, key]).toEqual(["VALUE mykey 0 6", "mykey2"]);
+        });
+    });
+});
+
+test('Verify failing replace command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11226', '100'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11226" "replace mykey 0 3600 5\\r\\nmykey"').then(log => {
+            expect(log.trim()).toBe("NOT_STORED");
+    });
+});
+
+test('Verify append command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11241', '1'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11241" "flush_all 1 noreply\\r\\nset mykey 0 3600 5\\r\\nmykey"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11241" "append mykey 0 3600 6 noreply\\r\\nappend\\r\\nget mykey"').then(log1 => { 
+            var results = log1.trim().split("\r\n");
+            var value   = results[0].trim();
+            var key     = results[1].trim();    
+            expect([value, key]).toEqual(["VALUE mykey 0 11", "mykeyappend"]);
+        });
+    });
+});
+
+test('Verify failing append command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11226', '100'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11226" "append mykey 0 3600 5\\r\\nmykey"').then(log => {
+            expect(log.trim()).toBe("NOT_STORED");
+    });
+});
+
+test('Verify prepend command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11240', '1'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11240" "flush_all 1 noreply\\r\\nset mykey 0 3600 5\\r\\nmykey"').then(log => {
+        callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11240" "prepend mykey 0 3600 8 noreply\\r\\npreppend\\r\\nget mykey"').then(log1 => { 
+            var results = log1.trim().split("\r\n");
+            var value   = results[0].trim();
+            var key     = results[1].trim();    
+            expect([value, key]).toEqual(["VALUE mykey 0 13", "preppendmykey"]);
+        });
+    });
+});
+
+test('Verify failing prepend command with client', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11241', '100'], {detached: true});
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11241" "flush_all 1 noreply\\r\\nprepend mykey 0 3600 5\\r\\nmykey"').then(log => {
+            expect(log.trim()).toBe("NOT_STORED");
+    });
+});
+
+test('Verify get command from client multiple keys', () => {
+    var log = "";
+    const spawn = require('child_process').spawn;
+    const util = require('util');
+    const exec = util.promisify(require('child_process').exec);
+
+    async function callCommand(command) {
+        const { stdout, stderr } = await exec(command);
+        return stdout;
+    }
+    
+    spawn("node",['C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\src\\startServer.js', '127.0.0.1', '11243', '100'], {detached: true});
+    
+    callCommand('node C:\\Users\\Mauricio\\Documents\\NodeProjects\\challenge\\scripts\\runclient.js "127.0.0.1" "11243" "set mykey 0 3600 5\\r\\nmykey\\r\\nset mykey2 0 3600 6\\r\\nmykey2\\r\\nget mykey mykey2"').then(log => {
+        var results = log.trim().split("\r\n");
+        var value   = results[0].trim();
+        var key     = results[1].trim();
+        var value2  = results[2].trim();
+        var key2    = results[3].trim();
+            
+        expect([value, key, value2, key2]).toEqual(["VALUE mykey 0 5", "mykey","VALUE mykey2 0 6", "mykey2"]);
+    });
+
+});

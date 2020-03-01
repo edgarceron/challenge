@@ -124,9 +124,21 @@ class Cache{
      * @param {number} memory Amount of memory in megabytes
      */
     setMaxMemory(memory){
-        this.maxMemory = memory * 1024;
+        this.maxMemory = Math.floor(memory * 1024);
     }
 
+    /**
+     * Gets the max memory of the cache
+     * @returns {number} Amount of memory in bytes
+     */
+    getMaxMemory(memory){
+        return this.maxMemory;
+    }
+
+    /**
+     * Cheks if the cache reached its memory limit
+     * @returns {boolean} true if the max memory was exceeded, false if not.
+     */
     maxMemoryReached(){
         if(this.maxMemory != 0 && this.memoryUsage > this.maxMemory){
             return true;

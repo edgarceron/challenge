@@ -28,3 +28,11 @@ test('Clear non-existent cas', () => {
     var cacheObj = cache.SingletonCache.getInstance();
     expect(cacheObj.clearCas(0)).toBe(true);
 });
+
+test('Max memory used', () => {
+    var cacheObj = cache.SingletonCache.getInstance();
+    cacheObj.alterMemoryUsage(15);
+    cacheObj.setMaxMemory(0.01);
+
+    expect(cacheObj.maxMemoryReached()).toBe(true);
+})

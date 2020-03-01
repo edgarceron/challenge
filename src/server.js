@@ -7,6 +7,7 @@ const options    = readConfig.readOptions();
  * @param {number} memory Ammount of memory use in megabytes
  * @param {string} address Represents the address in which the server
  * is going to listen. 
+ * @param {boolean} noLogs Whether if show logs or not. 
 */
 function startServer(port, memory, address, noLogs = false){
     var cacheObj = cache.SingletonCache.getInstance();
@@ -31,7 +32,7 @@ function startServer(port, memory, address, noLogs = false){
                 var chk = data.toString();
                 var messages = chk.split("\r\n");
                 messages.forEach(message => {
-                    console.log(message);
+                    if(!noLogs) console.log(message);
                     do{
                         if(message != ""){
                             if(!calculating){
@@ -39,7 +40,7 @@ function startServer(port, memory, address, noLogs = false){
                                 result = handleData.handleData(message, result);  
                                 calculating = false; 
                             }
-                            console.log(result);
+                            if(!noLogs) console.log(result);
                             if(result.command == "flush_all"){
                                 cacheObj.expurgeExpiredKeys(result.key);
                             }
