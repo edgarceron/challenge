@@ -35,6 +35,11 @@ As you could expect this notation works for sending multiple commands in one run
 node /scripts/runClient.js 127.0.0.1 11211 "set mykey 0 3600 5\r\nmykey\r\nget mykey"
 ```
 
+Fot the extra assigment of expurging expired keys you could use the command flush_all with 0 argument:
+```
+node /scripts/runClient.js 127.0.0.1 11211 "flush_all 0"
+```
+
 Any output will be displayed in the command terminal you're using. 
 
 However this memcached server was also tested with a python implementation of memcached client, so in theory any other memcached client could make use of it. 
@@ -49,3 +54,4 @@ npm run test
 
 ### Docs
 An auto-generated documentation using jsdoc could be displayed in your browser just by running the index.html found in the docs folder.
+
